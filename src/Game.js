@@ -11,6 +11,7 @@ class Game {
     this.track = [];
     this.score = 0;
     this.gameOver = false;
+    this.gameInterval = null; // Добавил инициализацию
     this.regenerateTrack();
   }
 
@@ -45,34 +46,45 @@ class Game {
     if (
       this.hero.boomerang &&
       this.hero.boomerang.isFlying &&
-      this.hero.boomerang.position === this.enemy.position &&
       this.hero.boomerang.position === this.enemy.position
     ) {
       this.enemy.die();
       this.score += 10;
 
-      // Правильно сбрасываем бумеранг
-      this.hero.boomerang.isFlying = false;
-      this.hero.boomerang.isReturning = false;
-      this.hero.boomerang.position = this.hero.position;
+      // БУМЕРАНГ НАЧИНАЕТ ВОЗВРАЩАТЬСЯ, А НЕ СРАЗУ ИСЧЕЗАЕТ
+      this.hero.boomerang.isReturning = true;
+      this.hero.boomerang.direction = -1; // Меняем направление на обратное
 
       // Создаем нового врага
       this.enemy = new Enemy();
     }
 
-    // Проверка возврата бумеранга
+    // Проверка возврата бумеранга к герою
     if (
       this.hero.boomerang &&
       this.hero.boomerang.isReturning &&
       this.hero.boomerang.position === this.hero.position
     ) {
+      // Бумеранг полностью возвращен
       this.hero.boomerang.isFlying = false;
       this.hero.boomerang.isReturning = false;
+      this.hero.boomerang.position = this.hero.position;
+    }
+
+    // Автоматический возврат бумеранга при достижении конца трека
+    if (
+      this.hero.boomerang &&
+      this.hero.boomerang.isFlying &&
+      !this.hero.boomerang.isReturning &&
+      this.hero.boomerang.position >= this.trackLength - 1
+    ) {
+      this.hero.boomerang.isReturning = true;
+      this.hero.boomerang.direction = -1;
     }
   }
 
   play() {
-    setInterval(() => {
+    this.gameInterval = setInterval(() => { // Сохраняем ID интервала
       if (this.gameOver) {
         return;
       }
@@ -94,6 +106,14 @@ class Game {
       this.regenerateTrack();
       this.view.render(this.track);
     }, 500);
+  }
+
+  // Метод для остановки игры при Game Over
+  stopGame() {
+    if (this.gameInterval) {
+      clearInterval(this.gameInterval);
+      this.gameInterval = null;
+    }
   }
 
   restart() {
