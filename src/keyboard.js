@@ -1,40 +1,44 @@
-// Умеешь работать с keypress? Попробуй разобраться в этом файле.
-// Вместо keypress можно использовать и стандартный readline.
-// Главное не используй всё вместе!
-
 const keypress = require('keypress');
 
-// Управление.
-// Настроим соответствия нажатий на клавиши и действий в игре.
+function setupKeyboard(game) {
+  const redraw = () => {
+    // ограничим позицию героя в пределах поля
+    game.hero.position = Math.max(0, Math.min(game.trackLength - 1, game.hero.position));
+    game.regenerateTrack();
+    game.view.render(game.track);
+  };
 
-const keyboard = {
-  q: () => console.log('q'),
-  w: () => console.log('w'),
-  e: () => console.log('e'),
-  r: () => console.log('r'),
-  t: () => console.log('t'),
-  y: () => console.log('y'),
-};
+  const keyboard = {
+    // A / стрелка влево
+    a: () => { game.hero.moveLeft(); redraw(); },
+    left: () => { game.hero.moveLeft(); redraw(); },
 
-// Какая-то функция.
+    // D / стрелка вправо
+    d: () => { game.hero.moveRight(); redraw(); },
+    right: () => { game.hero.moveRight(); redraw(); },
 
-function runInteractiveConsole() {
+    // Space — бросить бумеранг
+    space: () => {
+      if (game.hero.attack()) console.log('Бумеранг брошен!');
+      else console.log('Бумеранг ещё в полёте!');
+      redraw();
+    },
+
+    // Q — выход
+    q: () => { console.log('Выход из игры...'); process.exit(); },
+
+    // R — на будущее (перезапуск после gameOver)
+    r: () => { /* опционально */ },
+  };
+
   keypress(process.stdin);
   process.stdin.on('keypress', (ch, key) => {
-    if (key) {
-      // Вызывает команду, соответствующую нажатой кнопке.
-      if (key.name in keyboard) {
-        keyboard[key.name]();
-      }
-      // Прерывание программы.
-      if (key.ctrl && key.name === 'c') {
-        process.exit();
-      }
-    }
+    if (!key) return;
+    if (keyboard[key.name]) keyboard[key.name]();
+    if (key.ctrl && key.name === 'c') process.exit();
   });
-  process.stdin.setRawMode(true);
+  if (process.stdin.isTTY) process.stdin.setRawMode(true);
+  process.stdin.resume();
 }
 
-// Давай попробуем запустить этот скрипт!
-
-runInteractiveConsole();
+module.exports = { setupKeyboard };

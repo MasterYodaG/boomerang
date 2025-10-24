@@ -1,14 +1,54 @@
-// Сделаем отдельный класс для отображения игры в консоли.
+// класс для отображения игры в консоли
 
 class View {
-  render() {
+  constructor(game){
+    this.game = game;
+  }
+
+  render(track) {
     const yourTeamName = 'Elbrus';
 
-    // Тут всё рисуем.
+    
+
+    // 
     console.clear();
-    console.log(this.game.track.join(''));
-    console.log('\n\n');
-    console.log(`Created by "${yourTeamName}" with love`);
+    
+    // Заголовок игры
+    console.log('🌀═══════════════════════════════════════════════🌀');
+    console.log('               BOOMERANG GAME');
+    console.log('🌀═══════════════════════════════════════════════🌀');
+    console.log('');
+    
+    // Отрисовка трека с границами
+    const trackLine = track.map(cell => cell === ' ' ? ' ' : cell).join('');
+    const width = track.length;
+    console.log('┌' + '─'.repeat(width) + '┐');     
+    // основная линия (там где герой и враги)
+    console.log('│' + trackLine + '│');
+    // добавляем ещё 4 пустые линии под полем
+    for (let i = 0; i < 3; i++) {
+      console.log('│' + ' '.repeat(width) + '│');
+    }
+    // низ рамки
+    console.log('└' + '─'.repeat(width) + '┘');
+
+    // Статистика игры
+    console.log('\n❤️  Жизни:', this.game.hero.lives);
+    console.log('🎯 Счёт:', this.game.score || 0);
+    
+    // Управление
+    console.log('\n🎮 Управление:');
+    console.log('A/D - Влево/Вправо');
+    console.log('Space - Бросить бумеранг');
+    console.log('Q - Выйти из игры');
+    
+    // Сообщение о конце игры
+    if (this.game.gameOver) {
+      console.log('\n💀 GAME OVER! 💀');
+      console.log('Нажмите R для перезапуска');
+    }
+    
+    console.log(`\nCreated by "${yourTeamName}" with love`);
   }
 }
 
