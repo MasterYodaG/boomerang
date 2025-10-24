@@ -4,7 +4,7 @@
 
 class Boomerang {
   constructor(startPosition) {
-    this.skin = '🌀';
+    this.skin = '🪓';
     this.position = startPosition;
     this.startPosition = startPosition;
     this.isFlying = false;
@@ -14,6 +14,8 @@ class Boomerang {
 
   fly() {
     this.isFlying = true;
+    this.isReturning = false;
+    this.position = this.startPosition + 1;
   }
 
   move() {
@@ -25,7 +27,7 @@ class Boomerang {
       }
     } else if (this.isReturning) {
       // Возвращаемся назад
-      this.moveLeft();
+      this.position -= 3;
       if (this.position <= this.startPosition) {
         // Вернулись к герою
         this.isFlying = false;

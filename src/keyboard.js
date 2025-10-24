@@ -28,7 +28,12 @@ function setupKeyboard(game) {
     q: () => { console.log('Выход из игры...'); process.exit(); },
 
     // R — на будущее (перезапуск после gameOver)
-    r: () => { /* опционально */ },
+    r: () => { 
+      if(game.gameOver) {
+        game.play();
+        game.restart();
+      }
+    },
   };
 
   keypress(process.stdin);
