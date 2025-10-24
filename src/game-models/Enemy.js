@@ -21,7 +21,6 @@ class Enemy {
       // Если враг дошел до начала, респавним в конце
       if (this.position < 0) {
         this.position = 25;
-        this.speed += 2; // Увеличиваем скорость
       }
     }
   }
@@ -30,6 +29,11 @@ class Enemy {
     // Идём влево.
     this.position -= 1;
   }
+
+  respawn() {
+    this.position = 25;
+    this.generateSkin();
+    }
 
   die() {
     if (!this.isAlive) return; // добавил "защиту" и теперь при убийстве врага добавляются очки
