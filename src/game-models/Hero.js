@@ -54,7 +54,7 @@ class Hero {
   }
 
   die() {
-    this.lives -= 1;
+    this.lives -= 0;
     if (this.lives <= 0) {
       this.skin = '💀';
       console.log('YOU ARE DEAD!💀');

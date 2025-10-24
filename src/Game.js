@@ -1,6 +1,7 @@
 const Hero = require('./game-models/Hero');
 const Enemy = require('./game-models/Enemy');
 const View = require('./View');
+const { Score } = require('../db/models');
 
 class Game {
   constructor({ trackLength }) {
@@ -10,6 +11,7 @@ class Game {
     this.view = new View(this);
     this.track = [];
     this.score = 0;
+    this.gameInterval = null;
     this.gameOver = false;
     this.regenerateTrack();
   }
@@ -72,8 +74,10 @@ class Game {
   }
 
   play() {
-    setInterval(() => {
+    this.gameInterval = setInterval(async () => {
       if (this.gameOver) {
+        clearInterval(this.gameInterval);
+        await Score.create({ player: 'Сова', score: this.score });
         return;
       }
 
@@ -93,7 +97,7 @@ class Game {
       this.check();
       this.regenerateTrack();
       this.view.render(this.track);
-    }, 500);
+    }, 250);
   }
 
   restart() {
