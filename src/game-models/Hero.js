@@ -1,30 +1,41 @@
-// Наш герой.
+// Наш герой
 
 class Hero {
   constructor({ position }) {
-    this.skin = '🤠'; // можете использовать любые emoji '💃'
+    this.skin = '🤠'; // можем использовать любые emoji '💃'
     this.position = position;
+    this.lives = 3;          // Количество жизней
+    this.boomerang = null;   // Оружие
   }
 
   moveLeft() {
-    // Идём влево.
+    // Идём влево
     this.position -= 1;
   }
 
   moveRight() {
-    // Идём вправо.
+    // Идём вправо
     this.position += 1;
   }
 
   attack() {
-    // Атакуем.
+    // Атакуем
+    if (!this.boomerang) {
+      const Boomerang = require('./Boomerang');
+      this.boomerang = new Boomerang(this.position);
+    }
     this.boomerang.fly();
   }
 
+  // умераем
   die() {
-    this.skin = '💀';
-    console.log('YOU ARE DEAD!💀');
-    process.exit();
+    this.lives -= 1;
+    if (this.lives <= 0) {
+      this.skin = '💀';
+      console.log('YOU ARE DEAD!💀');
+      return true; // Герой умер
+    }
+    return false; // У героя еще есть жизни
   }
 }
 
