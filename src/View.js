@@ -11,7 +11,9 @@ class View {
 
     //
     // console.clear();
-    process.stdout.write('\x1Bc');
+    // process.stdout.write('\x1Bc');
+    process.stdout.write('\x1Bc'); // полный сброс экрана (Reset/clear)
+    process.stdout.write('\x1b[H'); // курсор в позицию (1,1)
 
     // Заголовок игры
     console.log('🌀═══════════════════════════════════════════════🌀');
